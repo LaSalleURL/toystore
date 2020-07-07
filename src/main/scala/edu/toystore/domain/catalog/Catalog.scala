@@ -1,3 +1,12 @@
 package edu.toystore.domain.catalog
 
-final case class Catalog(toys: Seq[Toy])
+ case class Catalog(toys: List[Toy]) {
+
+
+    def toyPrice(toyId: ToyId): ToyPrice = {
+        toys.find(toy => toy.id.equals(toyId))
+            .get
+            .price
+    }
+
+}

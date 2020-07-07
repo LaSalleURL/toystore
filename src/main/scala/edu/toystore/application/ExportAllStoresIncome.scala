@@ -1,36 +1,33 @@
 package edu.toystore.application
 
-import edu.toystore.domain.stores.StoreId
-import edu.toystore.domain.stores_income.{Income, StoreIncome, StoresIncome}
+import edu.toystore.Utils
+import edu.toystore.domain.catalog.{Catalog, ToyRepository}
+import edu.toystore.domain.sales.{SaleRepository, Sales}
 
-final class ExportAllStoresIncome() {
+final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository: ToyRepository) {
+
+
     def execute(): Unit = {
-        //obtener los datos desde el csv
-        //transformar los datos
-        //exportar en csv
-        // Calcular la facturación diaria de dichas tiendas (total facturado por tienda).
-//        val allSales = saleRepository.all()
-//        allSales.
+        val sales  : Sales   = salesRepository.all()
+        val catalog: Catalog = toyRepository.all()
 
+        def getSalesWithTotalPrice(sales: Sales, catalog: Catalog) = {
+            val result = sales
+                .items
+                .map(sale => (sale.storeId.value, catalog.toyPrice(sale.toyId).value * sale.quantity))
 
-        val storesIncome = StoresIncome(
-            Seq(
-                StoreIncome(StoreId(1), Income(234.23)),
-                StoreIncome(StoreId(2), Income(654.99)),
-                StoreIncome(StoreId(3), Income(103.45))
-            )
-        )
+            val withTotalPrice = result
+                .groupBy(_._1)
+                .mapValues(x => x.map(_._2).sum)
+                .toList
+                .map(item => List(item._1.toString, item._2.toString))
 
-        println(storesIncome)
-//        sales
-//        storeId	toyId	quantity
+            withTotalPrice
+        }
 
-
-//        result:
-//        storeId	income
-//        1	        91.47
-//        2	        390.97
-
-
+        val salesWithTotalPrice = getSalesWithTotalPrice(sales, catalog)
+        val exportPath          = System.getProperty("user.dir") + "/income.csv"
+        println("Exporting results to path: " + exportPath)
+        Utils.exportToCSV(salesWithTotalPrice, exportPath)
     }
 }

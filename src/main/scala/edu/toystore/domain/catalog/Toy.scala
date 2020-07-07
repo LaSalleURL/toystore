@@ -2,10 +2,10 @@ package edu.toystore.domain.catalog
 
 
 object Toy {
-    def apply(id: Int, name: String, price: Float): Toy = Toy(
-        ToyId(id),
+    def apply(id: String, name: String, price: String): Toy = Toy(
+        ToyId(id.toInt),
         ToyName(name),
-        ToyPrice(price)
+        ToyPrice(price.toFloat)
     )
 }
 

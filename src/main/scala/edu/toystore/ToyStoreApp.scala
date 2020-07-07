@@ -1,15 +1,17 @@
 package edu.toystore
 
 import edu.toystore.application.ExportAllStoresIncome
+import edu.toystore.infrastructure.{CSVSaleRepository, CSVToyRepository}
 
 object ToyStoreApp extends App {
     println("Hello Toy Store!!")
 
-
-    val storesIncome = new ExportAllStoresIncome()
+    println("======= ALL STORES INCOME ========")
+    val storesIncome = new ExportAllStoresIncome(new CSVSaleRepository(), new CSVToyRepository())
     storesIncome.execute()
 
 
+//    println("======= ALL STORES INCOME ========")
 //    def getType(someValue: Any): String = someValue match {
 //        case n: Int    => s"Int found! $n"
 //        case s: String => s"String found! $s"
