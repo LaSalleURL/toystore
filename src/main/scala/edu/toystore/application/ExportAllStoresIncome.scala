@@ -11,23 +11,20 @@ final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository
         val sales  : Sales   = salesRepository.all()
         val catalog: Catalog = toyRepository.all()
 
-        def getSalesWithTotalPrice(sales: Sales, catalog: Catalog) = {
-            val result = sales
-                .items
-                .map(sale => (sale.storeId.value, catalog.toyPrice(sale.toyId).value * sale.quantity))
-
-            val withTotalPrice = result
-                .groupBy(_._1)
-                .mapValues(x => x.map(_._2).sum)
-                .toList
-                .map(item => List(item._1.toString, item._2.toString))
-
-            withTotalPrice
-        }
-
         val salesWithTotalPrice = getSalesWithTotalPrice(sales, catalog)
-        val exportPath          = System.getProperty("user.dir") + "/income.csv"
+
+        val exportPath = System.getProperty("user.dir") + "/income.csv"
         println("Exporting results to path: " + exportPath)
         Utils.exportToCSV(salesWithTotalPrice, exportPath)
+    }
+
+    private def getSalesWithTotalPrice(sales    : Sales, catalog: Catalog): List[List[String]] = {
+        val result = sales.items
+                          .map(sale => (sale.storeId.value, catalog.toyPrice(sale.toyId).value * sale.quantity))
+
+        result.groupBy(_._1)
+              .view.mapValues(x => x.map(_._2).sum)
+              .toList
+              .map(item => List(item._1.toString, item._2.toString))
     }
 }
