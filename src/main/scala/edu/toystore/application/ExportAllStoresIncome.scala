@@ -11,11 +11,12 @@ final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository
         val sales  : Sales   = salesRepository.all()
         val catalog: Catalog = toyRepository.all()
 
-        val salesWithTotalPrice = getSalesWithTotalPrice(sales, catalog)
+        val salesWithTotalPriceWithHeaders = getSalesWithTotalPrice(sales, catalog)
+            .prepended(List("Store Id", "Income"))
 
         val exportPath = System.getProperty("user.dir") + "/income.csv"
         println("Exporting results to path: " + exportPath)
-        Utils.exportToCSV(salesWithTotalPrice, exportPath)
+        Utils.exportToCSV(salesWithTotalPriceWithHeaders, exportPath)
     }
 
     private def getSalesWithTotalPrice(sales    : Sales, catalog: Catalog): List[List[String]] = {
@@ -26,5 +27,7 @@ final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository
               .view.mapValues(x => x.map(_._2).sum)
               .toList
               .map(item => List(item._1.toString, item._2.toString))
+
+        //TODO: implementar order by STORE ID
     }
 }
