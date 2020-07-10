@@ -1,7 +1,7 @@
 package edu.toystore
 
 import edu.toystore.application.{ExportAllStoresIncome, ExportAllStoresStock}
-import edu.toystore.infrastructure.{CSVSaleRepository, CSVStockRepository, CSVStoreRepository, CSVStoreSalesRepository, CSVToyRepository}
+import edu.toystore.infrastructure.{CSVSaleRepository, CSVStockRepository, CSVStoreRepository, CSVStoreSalesRepository, CSVStoreStockRepository, CSVToyRepository}
 
 object ToyStoreApp extends App {
     println("Hello Toy Store!!")
@@ -12,7 +12,7 @@ object ToyStoreApp extends App {
 
 
     println("======= REFILL ========")
-    val storesStock = new ExportAllStoresStock(new CSVStockRepository, new CSVStoreRepository)
+    val storesStock = new ExportAllStoresStock(new CSVStockRepository, new CSVStoreRepository, new CSVStoreStockRepository)
     storesStock.execute()
 //    def getType(someValue: Any): String = someValue match {
 //        case n: Int    => s"Int found! $n"
