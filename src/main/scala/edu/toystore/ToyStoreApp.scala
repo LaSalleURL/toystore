@@ -1,27 +1,54 @@
 package edu.toystore
 
-import edu.toystore.application.{ExportAllStoresIncome, ExportAllStoresStock}
-import edu.toystore.infrastructure.{CSVSaleRepository, CSVStockRepository, CSVStoreRepository, CSVStoreSalesRepository, CSVStoreStockRepository, CSVToyRepository}
+import edu.toystore.application.{ExportAllStoresBalance, ExportAllStoresIncome, ExportAllStoresStock}
+import edu.toystore.infrastructure.{
+    CSVImbalanceRepository, CSVSaleRepository, CSVStockRepository,
+    CSVStoreRepository, CSVStoreSalesRepository, CSVStoreStockRepository, CSVToyRepository
+}
+
+import scala.annotation.tailrec
 
 object ToyStoreApp extends App {
-    println("Hello Toy Store!!")
 
-//    println("======= ALL STORES INCOME ========")
-//    val storesIncome = new ExportAllStoresIncome(new CSVSaleRepository, new CSVToyRepository, new CSVStoreSalesRepository)
-//    storesIncome.execute()
+    @tailrec
+    final def printMenu(): Unit = {
+        println("Select your choice:")
+        println("1. Stores income")
+        println("2. Stores stock")
+        println("3. Stores balance")
+        println("4. Exit")
 
+        val cmd = scala.io.StdIn.readLine()
+        cmd match {
+            case "1" =>
+                val storesIncome = new ExportAllStoresIncome(
+                    new CSVSaleRepository, new CSVToyRepository, new CSVStoreSalesRepository
+                )
+                storesIncome.execute()
+                println("Exported successfully.. \n")
+                printMenu()
 
-    println("======= REFILL ========")
-    val storesStock = new ExportAllStoresStock(new CSVStockRepository, new CSVStoreRepository, new CSVStoreStockRepository)
-    storesStock.execute()
-//    def getType(someValue: Any): String = someValue match {
-//        case n: Int    => s"Int found! $n"
-//        case s: String => s"String found! $s"
-//        case n: Float  => s"Float found! $n"
-//        case _         => "Invalid type!"
-//    }
-//
-//    val name : String = "Diego"
-//    val typeN: String = getType(name)
-//    print(s"Type is: $typeN")
+            case "2" =>
+                val storesStock = new ExportAllStoresStock(
+                    new CSVStockRepository, new CSVStoreRepository, new CSVStoreStockRepository
+                )
+                storesStock.execute()
+                println("Exported successfully.. \n")
+                printMenu()
+
+            case "3" =>
+                val imbalance = new ExportAllStoresBalance(
+                    new CSVStockRepository, new CSVSaleRepository, new CSVImbalanceRepository
+                )
+                imbalance.execute()
+                println("Exported successfully.. \n")
+                printMenu()
+
+            case "4" => ()
+            case _   => printMenu()
+        }
+    }
+
+    printMenu()
+
 }

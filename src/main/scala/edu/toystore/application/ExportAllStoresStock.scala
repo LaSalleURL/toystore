@@ -5,8 +5,8 @@ import edu.toystore.domain.store_stock.{StoreStock, StoreStockRepository}
 import edu.toystore.domain.stores.{Store, StoreRepository}
 
 class ExportAllStoresStock(stockRepository: StockRepository,
-    storeRepository                       : StoreRepository,
-    storeStockRepository                  : StoreStockRepository) {
+    storeRepository: StoreRepository,
+    storeStockRepository: StoreStockRepository) {
 
 
     def execute(): Unit = {
@@ -25,6 +25,7 @@ class ExportAllStoresStock(stockRepository: StockRepository,
                     stock.getRefillQuantity.toString
                 )
             })
+            .filter(storeStock => storeStock.quantity > 0)
 
         storeStockRepository.saveAll(storeStockList)
     }

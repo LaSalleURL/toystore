@@ -19,7 +19,7 @@ class CSVStoreStockRepository extends StoreStockRepository {
             )
             .prepended(List("Store Id", "Store Name", "Store Address", "Toy Id", "Quantity"))
 
-        val exportPath = System.getProperty("user.dir") + "/refill.csv"
+        val exportPath = System.getProperty("user.dir") + "/target/refill.csv"
         Utils.exportToCSV(storeStockListWithHeaders, exportPath)
     }
 }
