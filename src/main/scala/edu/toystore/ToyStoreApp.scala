@@ -1,13 +1,13 @@
 package edu.toystore
 
 import edu.toystore.application.{ExportAllStoresIncome, ExportAllStoresStock}
-import edu.toystore.infrastructure.{CSVSaleRepository, CSVStockRepository, CSVStoreRepository, CSVToyRepository}
+import edu.toystore.infrastructure.{CSVSaleRepository, CSVStockRepository, CSVStoreRepository, CSVStoreSalesRepository, CSVToyRepository}
 
 object ToyStoreApp extends App {
     println("Hello Toy Store!!")
 
 //    println("======= ALL STORES INCOME ========")
-//    val storesIncome = new ExportAllStoresIncome(new CSVSaleRepository(), new CSVToyRepository())
+//    val storesIncome = new ExportAllStoresIncome(new CSVSaleRepository, new CSVToyRepository, new CSVStoreSalesRepository)
 //    storesIncome.execute()
 
 

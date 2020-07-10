@@ -1,33 +1,27 @@
 package edu.toystore.application
 
-import edu.toystore.Utils
 import edu.toystore.domain.catalog.{Catalog, ToyRepository}
 import edu.toystore.domain.sales.{SaleRepository, Sales}
+import edu.toystore.domain.store_sales.{StoreSales, StoreSalesRepository}
 
-final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository: ToyRepository) {
+final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository: ToyRepository, storeBillingRepository: StoreSalesRepository) {
 
 
     def execute(): Unit = {
         val sales  : Sales   = salesRepository.all()
         val catalog: Catalog = toyRepository.all()
 
-        val salesWithTotalPriceWithHeaders = getSalesWithTotalPrice(sales, catalog)
-            .prepended(List("Store Id", "Income"))
+        val storeSales = sales.items
+             .map(sale => {
+                 val totalPrice = catalog.toyPrice(sale.toyId).value * sale.quantity
+                 (sale.storeId, totalPrice)
+             })
+            .groupBy(_._1)
+            .view.mapValues(v => v.map(_._2).sum) //sum all prices
+            .toList
+            .map(item => StoreSales(item._1.value.toString, item._2.toString))
 
-        val exportPath = System.getProperty("user.dir") + "/income.csv"
-        println("Exporting results to path: " + exportPath)
-        Utils.exportToCSV(salesWithTotalPriceWithHeaders, exportPath)
+        storeBillingRepository.saveAll(storeSales)
     }
 
-    private def getSalesWithTotalPrice(sales    : Sales, catalog: Catalog): List[List[String]] = {
-        val result = sales.items
-                          .map(sale => (sale.storeId.value, catalog.toyPrice(sale.toyId).value * sale.quantity))
-
-        result.groupBy(_._1)
-              .view.mapValues(x => x.map(_._2).sum)
-              .toList
-              .map(item => List(item._1.toString, item._2.toString))
-
-        //TODO: implementar order by STORE ID
-    }
 }
