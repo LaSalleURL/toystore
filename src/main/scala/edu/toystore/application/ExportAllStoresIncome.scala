@@ -19,6 +19,7 @@ final class ExportAllStoresIncome(salesRepository: SaleRepository, toyRepository
             .groupBy(_._1)
             .view.mapValues(v => v.map(_._2).sum) //sum all prices
             .toList
+            /* Te has dejado el sort */
             .map(item => StoreSales(item._1.value.toString, item._2.toString))
 
         storeBillingRepository.saveAll(storeSales)

@@ -3,6 +3,7 @@ package edu.toystore
 import edu.toystore.domain.catalog.{Catalog, Toy}
 import edu.toystore.domain.sales.Sale
 
+/* ??? Esto parece no estar acabado */
 object ToyStoreFunctional extends App {
 
     def readFromCSV(path: String, delimiter: String): List[List[String]] = {
